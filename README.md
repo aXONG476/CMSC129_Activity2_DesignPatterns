@@ -46,6 +46,134 @@ The base review ay foundation lang siya, and we just make wrap it with a specifi
 
   Without our pinakamamahal na decorator, we need to make iba't ibang classes for the categories pati narin ang kanilang combinations na magmemake result on class explosion which is so hirap talaga to maintain sa isang dating app. Yung ating decorator makes our system to be very flexible talaga kasi we only need to wrap our base review to make dagdag the categories na want ng users irate, or if gusto nila magbigay ng review. This also adheres to the isa sa SOLID principles, yung Single Responsibility Principle kung saan each decorator only make focus sa kaniyang implementation, like yung profileAccuracyDecorator only make focus sa pagmanage ng pag-implement ng profile accuracy category, and so on, like gets ba? This will also make our buhay easier kung may idadagdag tayo na categories or ways to vibe check our matches like if magdagdag tayo ng tags na functionality other than the categories or reviews.
 * **Pseudocode:**
+```
+# 1. THE BASE INTERFACE
+# This defines the "contract" that all reviews and decorators must follow.
+CLASS VibeComponent:
+    FUNCTION get_vibe_summary():
+        // Returns the string description of the vibe check
+    FUNCTION get_total_score():
+        // Returns the accumulated numeric rating
+
+# 2. THE CONCRETE COMPONENT (The Foundation)
+# The bare minimum review object before any categories are added.
+CLASS BaseReview IMPLEMENTS VibeComponent:
+    CONSTRUCTOR(match_id):
+        self.match_id = match_id
+        self.base_score = 0 // Base review starts with no score
+
+    FUNCTION get_vibe_summary():
+        RETURN "Vibe check for " + self.match_id
+
+    FUNCTION get_total_score():
+        RETURN self.base_score
+
+# 3. THE BASE DECORATOR
+# The wrapper that delegates calls to the wrapped object.
+CLASS ReviewDecorator IMPLEMENTS VibeComponent:
+    CONSTRUCTOR(wrapped_vibe):
+        self.wrapped_vibe = wrapped_vibe
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary()
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score()
+
+# 4. SPECIFIC CATEGORY DECORATORS (The Layers)
+
+# Category 1: Response Time (Ghost-Meter)
+CLASS ResponseTimeDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, score):
+        SUPER(wrapped_vibe)
+        self.score = score
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary() + " | Response: " + self.score + "/5"
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score() + self.score
+
+# Category 2: Quality of Conversation
+CLASS ConvQualityDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, score):
+        SUPER(wrapped_vibe)
+        self.score = score
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary() + " | Chat Quality: " + self.score + "/5"
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score() + self.score
+
+# Category 3: Profile Accuracy
+CLASS ProfileAccuracyDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, score):
+        SUPER(wrapped_vibe)
+        self.score = score
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary() + " | Accuracy: " + self.score + "/5"
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score() + self.score
+
+# Category 4: Digital Respect
+CLASS DigitalRespectDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, score):
+        SUPER(wrapped_vibe)
+        self.score = score
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary() + " | Respect: " + self.score + "/5"
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score() + self.score
+
+# Category 5: Vibe Consistency
+CLASS VibeConsistencyDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, score):
+        SUPER(wrapped_vibe)
+        self.score = score
+
+    FUNCTION get_vibe_summary():
+        RETURN self.wrapped_vibe.get_vibe_summary() + " | Consistency: " + self.score + "/5"
+
+    FUNCTION get_total_score():
+        RETURN self.wrapped_vibe.get_total_score() + self.score
+
+# Extra Feature: Letterboxd-style Written Review
+CLASS WrittenReviewDecorator EXTENDS ReviewDecorator:
+    CONSTRUCTOR(wrapped_vibe, review_text):
+        SUPER(wrapped_vibe)
+        self.review_text = review_text
+
+    FUNCTION get_vibe_summary():
+        // Stacks the text at the end of the summary
+        RETURN self.wrapped_vibe.get_vibe_summary() + " [Review: " + self.review_text + "]"
+
+    FUNCTION get_total_score():
+        // Written reviews don't add to the numeric score
+        RETURN self.wrapped_vibe.get_total_score()
+
+# 5. USAGE
+// 1. Start with the base
+vibe_check = BaseReview("UPV_Match_2026")
+
+// 2. Wrap only the categories the user chose
+IF user_rated_response:
+    vibe_check = ResponseTimeDecorator(vibe_check, 5)
+
+IF user_rated_respect:
+    vibe_check = DigitalRespectDecorator(vibe_check, 4)
+
+IF user_left_comment:
+    vibe_check = WrittenReviewDecorator(vibe_check, "Super green flag!")
+
+// 3. Output the final stacked result
+PRINT vibe_check.get_vibe_summary()
+PRINT "Total Score: " + vibe_check.get_total_score()
+```
 
 
 
