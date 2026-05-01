@@ -35,6 +35,30 @@ Other than rating them based on the given categories, users can also leave a rev
   
 * **Visual Diagram:**
 
+  ```mermaid
+  flowchart TD
+
+  A[Start] --> B[Load Match Reviews]
+
+  B --> C{Select Scoring Strategy}
+
+  C -->|Basic Average| D[Use BasicAverageStrategy]
+  C -->|Weighted Trust| E[Use WeightedTrustStrategy]
+  C -->|Recent Boost| F[Use RecentBoostStrategy]
+
+  D --> G[Calculate Vibe Score]
+  E --> G
+  F --> G
+
+  G --> H[Display Final Vibe Score]
+
+  H --> I{Change Strategy?}
+
+  I -->|Yes| C
+  I -->|No| J[End]
+  ```
+  
+
 
   
 * **Why it Works Nga:**
