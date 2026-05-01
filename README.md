@@ -19,6 +19,28 @@ After you and your match chatted for a certain period, you can choose to vibe ch
 ### Leaving a Review
 Other than rating them based on the given categories, users can also leave a review or anything they wanted other users to know about their match.
 
+## Design Pattern Implementation
+### 1. Creational Design Pattern
+* **Name of Pattern:** Creational - Factory
+* **Concept in Conyo:**
+* **Visual Diagram:**
+* **Why it Works Nga:**
+* **Pseudocode:**
+
+### 2. Behavioral Design Pattern
+* **Name of Pattern:** Behavioral - Strategy
+* **Concept in Conyo:**
+* **Visual Diagram:**
+* **Why it Works Nga:**
+* **Pseudocode:**
+
+### 3. Structural Design Pattern
+* **Name of Pattern:** Structural - Decorator
+* **Concept in Conyo:**
+* **Visual Diagram:**
+* **Why it Works Nga:**
+* **Pseudocode:**
+
 
 
 
