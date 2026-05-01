@@ -30,15 +30,100 @@ Other than rating them based on the given categories, users can also leave a rev
 ### 2. Behavioral Design Pattern
 * **Name of Pattern:** Behavioral - Strategy
 * **Concept in Conyo:**
-* **Visual Diagram:**
-* **Why it Works Nga:**
-* **Pseudocode:**
 
+  Kasi sa Dateboxd, hindi lang isa way para i-compute ang Vibe Score ng users. Depende sa need ng app, puwedeng iba-iba ang method ng pagcalculate ng ratings. For example, puwedeng pantay-pantay ang weight ng all categories, puwede rin mas mabigat ang Digital Respect kaysa Response Time, or puwede rin mas mataas ang influence ng recent reviews kaysa old ones. Instead na gumawa tayo ng super daming if-else statements like if standard mode, if weighted mode, if trending mode, ginagamit natin si Strategy Pattern. Gumagawa lang tayo ng iba’t ibang scoring algorithms as separate classes, then puwede silang palitan anytime during runtime. Parang same goal, different diskarte lang siya. Goal = compute Vibe Score, diskarte = chosen strategy. Super flexible nito kasi madaling magpalit o magdagdag ng bagong scoring method without changing the main code.
+  
+* **Visual Diagram:**
+
+
+  
+* **Why it Works Nga:**
+
+  Without Strategy Pattern, lahat ng score computation logic magiging halo-halo sa isang malaking class. Kapag may bagong scoring system, edit ka nanaman ng core code, which can create bugs and stress.
+With Strategy Pattern, bawat algorithm hiwalay ang responsibility. Ang BasicAverageStrategy focus lang sa pagkuha ng average score. Ang WeightedTrustStrategy focus sa pagbibigay higher weight sa trusted or verified reviews. Ang RecentBoostStrategy focus sa pagprioritize ng recent interactions. This follows the Open/Closed Principle kasi open for extension siya (add new strategies), but closed for modification (di gagalawin old code). Perfect ito for apps like Dateboxd na pwedeng mag evolve ang rating logic over time. Mas organized ang code, mas scalable ang system, at less iyak sa debugging.
+
+  
+* **Pseudocode:**
+  
+  ```
+  # 1. THE STRATEGY INTERFACE
+  # Defines a common interface for all vibe-calculation algorithms.
+  INTERFACE ScoringStrategy:
+      METHOD calculate(reviewss):
+          // Every strategy must implement this logic
+
+
+  # 2. CONCRETE STRATEGIES
+  # Different algorithms for different needs.
+
+  # Concrete Strategy 1
+  CLASS BasicAverageStrategy IMPLEMENTS ScoreStrategy:
+      FUNCTION calculate(reviews):
+          RETURN average of all review scores
+
+  # Concrete Strategy 2
+  CLASS WeightedTrustStrategy IMPLEMENTS ScoreStrategy:
+      FUNCTION calculate(reviews):
+          total = 0
+          weightSum = 0
+
+          FOR each review IN reviews:
+              weight = review.trust_level
+              total += review.score * weight
+              weightSum += weight
+
+          RETURN total / weightSum
+
+  # Concrete Strategy 3
+  CLASS RecentBoostStrategy IMPLEMENTS ScoreStrategy:
+      FUNCTION calculate(reviews):
+          total = 0
+          weightSum = 0
+
+          FOR each review IN reviews:
+              IF review.is_recent:
+                  weight = 2
+              ELSE:
+                  weight = 1
+
+              total += review.score * weight
+              weightSum += weight
+
+          RETURN total / weightSum
+
+  # 3. THE CONTEXT
+  # This is the class the App UI interacts with. 
+  # It doesn't know HOW the score is calculated, only that it IS calculated.
+  CLASS VibeCalculatorContext:
+      PRIVATE strategy: ScoringStrategy
+
+      # Allows the app to change scoring logic on the fly
+      METHOD set_strategy(new_strategy):
+          self.strategy = new_strategy
+
+      METHOD get_score(user_data):
+          RETURN self.strategy.calculate(user_data)
+
+  # 4. IMPLEMENTATION EXAMPLE
+  # Client-side usage in the Dateboxd App
+  calculator = NEW VibeCalculatorContext()
+
+  # User wants a standard vibe check
+  calculator.set_strategy(NEW BasicAverageStrategy())
+  PRINT "Standard Score: " + calculator.get_score(match_ratings)
+
+  # Admin wants to flag "red flag" behavior by prioritizing Respect scores
+  calculator.set_strategy(NEW SafetyFirstStrategy())
+  PRINT "Safety-Adjusted Score: " + calculator.get_score(match_ratings)
+
+  ```
+  
 ### 3. Structural Design Pattern
 * **Name of Pattern:** Structural - Decorator
 * **Concept in Conyo:**
 
   Kasi nga optional only ang categorical ratings in Dateboxd, it is bagay talaga to make gamit Decorator Pattern to implement our feature. We start with the Base Review and wrap it layer by layer gamit ang decorators. It's like similar to making halo-halo where you can make pili the toppings you want to add. Like, you can make lagay sago if you want it in your halo halo or you not make lagay beans if it you don't like it. So in our Dateboxd, the user can just pili if gusto nila irate ang quality conversation, we can just make wrap our base review with qualityConversationDecorator. If they want to leave a review, the program will just wrap it with a review decorator. They are not made pilit to rate all categories or to bigay a review.
+  
 
 The base review ay foundation lang siya, and we just make wrap it with a specific decorator that the user wanted to implement.
 * **Visual Diagram:**
